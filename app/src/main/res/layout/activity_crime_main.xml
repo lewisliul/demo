@@ -7,7 +7,7 @@
     android:paddingLeft="6dp"
     android:paddingRight="6dp"
     android:paddingTop="2dp"
-    android:background="#dfd6d6"
+    android:background="#fdf9f9"
     tools:context=".ui.CrimeActivity">
 
     <FrameLayout
