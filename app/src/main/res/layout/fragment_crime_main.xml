@@ -7,7 +7,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/crime_title_label"
-        style="?android:listSeparatorTextViewStyle"
+        android:textColor="#000000"
+        android:textStyle="bold"
         android:textSize="18sp"/>
 
     <EditText
@@ -15,26 +16,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/crime_title_hint"
-       android:layout_margin="10dp"
+        android:layout_margin="10dp"
         android:textSize="20sp"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/crime_details_label"
-        style="?android:listSeparatorTextViewStyle"
+        android:textColor="#000000"
+        android:textStyle="bold"
         android:textSize="18sp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp">
+        android:layout_margin="5dp">
         <Button
             android:id="@+id/id_fragment_crime_date_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="14sp"/>
+            android:textSize="15sp"/>
 
         <CheckBox
             android:id="@+id/id_fragment_crime_solved_cbx"

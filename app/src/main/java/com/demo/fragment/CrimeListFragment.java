@@ -1,5 +1,7 @@
 package com.demo.fragment;
 
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 import com.demo.R;
 import com.demo.base.CrimeLab;
 import com.demo.bean.Crime;
+import com.demo.ui.CrimeActivity;
 
 import java.util.List;
 
@@ -42,14 +45,20 @@ public class CrimeListFragment extends Fragment {
     private void updateUi() {
         CrimeLab lab = CrimeLab.getInstance(getActivity());
         List<Crime> crimeList = lab.getCrimeList();
-        mAdapter = new CrimeAdapter(crimeList);
-        mRecyclerView.setAdapter(mAdapter);
+        if(mAdapter == null){
+            mAdapter = new CrimeAdapter(crimeList);
+            mRecyclerView.setAdapter(mAdapter);
+        }
+        else{
+            mAdapter.notifyDataSetChanged();
+        }
+
     }
 
     /**
      * holder类
      */
-    private class CrimeHolder extends RecyclerView.ViewHolder {
+    private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView mTitleTextView;
         private TextView mDateTextView;
         private CheckBox mSolvedCheckbox;
@@ -60,6 +69,7 @@ public class CrimeListFragment extends Fragment {
             mTitleTextView = (TextView) itemView.findViewById(R.id.id_view_crimelistitem_title_txt);
             mDateTextView = (TextView) itemView.findViewById(R.id.id_view_crimelistitem_date_txt);
             mSolvedCheckbox = (CheckBox) itemView.findViewById(R.id.id_view_crimelistitem_cbx);
+            itemView.setOnClickListener(this);
         }
 
         public void bindCrime(Crime crime) {
@@ -67,6 +77,12 @@ public class CrimeListFragment extends Fragment {
             mTitleTextView.setText(mCrime.getTitle());
             mDateTextView.setText(mCrime.getDate().toString());
             mSolvedCheckbox.setChecked(mCrime.isSolved());
+        }
+
+        @Override
+        public void onClick(View view) {
+            Intent intent = CrimeActivity.newIntent(getActivity(),mCrime.getId());
+            startActivity(intent);
         }
     }
 
@@ -97,5 +113,12 @@ public class CrimeListFragment extends Fragment {
         public int getItemCount() {
             return crimeList.size();
         }
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUi();
     }
 }

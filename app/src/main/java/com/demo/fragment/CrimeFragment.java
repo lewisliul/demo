@@ -15,13 +15,17 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import com.demo.R;
+import com.demo.base.CrimeLab;
 import com.demo.bean.Crime;
+
+import java.util.UUID;
 
 
 /**
  * Created by hao on 2016/7/15.
  */
 public class CrimeFragment extends Fragment {
+    private static final String ARG_CRIME_ID = "arg_crime_id";
     private Crime mCrime;
     private EditText mTitleEdit;
     private Button mDateBtn;
@@ -31,6 +35,8 @@ public class CrimeFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCrime = new Crime();
+        UUID id = (UUID)getArguments().getSerializable(ARG_CRIME_ID);
+        mCrime = CrimeLab.getInstance(getActivity()).getCrime(id);
     }
 
     @Override
@@ -42,20 +48,17 @@ public class CrimeFragment extends Fragment {
         mTitleEdit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mCrime.setTitle(s.toString());
             }
-
             @Override
             public void afterTextChanged(Editable s) {
 
             }
         });
-
+        mTitleEdit.setText(mCrime.getTitle());
         mDateBtn.setText(mCrime.getDate().toString());
         mDateBtn.setEnabled(false);
         mSolvedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -64,7 +67,16 @@ public class CrimeFragment extends Fragment {
                 mCrime.setSolved(b);
             }
         });
+        mSolvedCheckBox.setChecked(mCrime.isSolved());
 
         return v;
+    }
+
+    public static CrimeFragment newInstace(UUID crimeId){
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_CRIME_ID,crimeId);
+        CrimeFragment cf = new CrimeFragment();
+        cf.setArguments(args);
+        return cf;
     }
 }

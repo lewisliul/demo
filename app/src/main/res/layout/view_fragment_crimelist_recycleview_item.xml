@@ -35,4 +35,10 @@
         android:textColor="#6968a7"
         tools:text="Crime Date"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@id/id_view_crimelistitem_date_txt"
+        android:background="#000000"/>
+
 </RelativeLayout>
