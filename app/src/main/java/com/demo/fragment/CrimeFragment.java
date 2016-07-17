@@ -78,8 +78,10 @@ public class CrimeFragment extends Fragment {
             public void onClick(View view) {
                 FragmentManager manager = getFragmentManager();
                 DatePickerFragment dialogFragment = DatePickerFragment.newInstance(mCrime.getDate());
-                dialogFragment.setTargetFragment(CrimeFragment.this,REQUEST_DATE);
                 dialogFragment.show(manager,DIALOG_DATE);
+                //设置目标的fragment
+                dialogFragment.setTargetFragment(CrimeFragment.this,REQUEST_DATE);
+
             }
         });
 

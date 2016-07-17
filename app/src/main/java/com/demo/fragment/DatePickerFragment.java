@@ -52,8 +52,7 @@ public class DatePickerFragment extends DialogFragment {
                         int month = mDatePicker.getMonth();
                         int day = mDatePicker.getDayOfMonth();
                         Date d = new GregorianCalendar(year,month,day).getTime();
-                        sendReques(Activity.RESULT_OK,d);
-
+                        sendRequest(d);
                     }
                 })
                 .create();
@@ -69,13 +68,13 @@ public class DatePickerFragment extends DialogFragment {
     }
 
     //创建intent并将日期数据作为extra附加到intent上传给目标fragment
-    private void sendReques(int resultCode,Date date){
+    private void sendRequest(Date date){
         if(getTargetFragment() == null){
             return ;
         }
         Intent i = new Intent();
         i.putExtra(EXTRA_DATE,date);
-        getTargetFragment().onActivityResult(getTargetRequestCode(),resultCode,i);
+        getTargetFragment().onActivityResult(getTargetRequestCode(),Activity.RESULT_OK,i);
     }
 
 }

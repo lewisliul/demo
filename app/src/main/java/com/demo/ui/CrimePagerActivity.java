@@ -47,7 +47,7 @@ public class CrimePagerActivity extends FragmentActivity {
                 return mCrimes.size();
             }
         });
-
+        //点击当前列表item，跳转相应的view页面
         for(int i=0;i<mCrimes.size();i++){
             if(mCrimes.get(i).getId().equals(id)){
                 mViewPager.setCurrentItem(i);
