@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.demo.R;
 import com.demo.base.CrimeLab;
 import com.demo.bean.Crime;
-import com.demo.ui.CrimeActivity;
+import com.demo.ui.CrimePagerActivity;
 
 import java.util.List;
 
@@ -81,7 +81,7 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            Intent intent = CrimeActivity.newIntent(getActivity(),mCrime.getId());
+            Intent intent = CrimePagerActivity.newIntent(getActivity(),mCrime.getId());
             startActivity(intent);
         }
     }

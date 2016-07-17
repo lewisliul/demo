@@ -1,9 +1,12 @@
 package com.demo.fragment;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -18,6 +21,7 @@ import com.demo.R;
 import com.demo.base.CrimeLab;
 import com.demo.bean.Crime;
 
+import java.util.Date;
 import java.util.UUID;
 
 
@@ -26,6 +30,8 @@ import java.util.UUID;
  */
 public class CrimeFragment extends Fragment {
     private static final String ARG_CRIME_ID = "arg_crime_id";
+    private static final String DIALOG_DATE = "DialogDate";
+    private static final int REQUEST_DATE = 0;
     private Crime mCrime;
     private EditText mTitleEdit;
     private Button mDateBtn;
@@ -55,12 +61,10 @@ public class CrimeFragment extends Fragment {
             }
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
         mTitleEdit.setText(mCrime.getTitle());
-        mDateBtn.setText(mCrime.getDate().toString());
-        mDateBtn.setEnabled(false);
+        updateDate();
         mSolvedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -68,6 +72,16 @@ public class CrimeFragment extends Fragment {
             }
         });
         mSolvedCheckBox.setChecked(mCrime.isSolved());
+        //时间按钮的点击事件
+        mDateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager manager = getFragmentManager();
+                DatePickerFragment dialogFragment = DatePickerFragment.newInstance(mCrime.getDate());
+                dialogFragment.setTargetFragment(CrimeFragment.this,REQUEST_DATE);
+                dialogFragment.show(manager,DIALOG_DATE);
+            }
+        });
 
         return v;
     }
@@ -78,5 +92,22 @@ public class CrimeFragment extends Fragment {
         CrimeFragment cf = new CrimeFragment();
         cf.setArguments(args);
         return cf;
+    }
+
+    //覆盖方法，从extra中获取日期数据，设置对应crime的记录日期，然后刷新日期按钮的显示
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode != Activity.RESULT_OK){
+            return;
+        }
+        if(requestCode == REQUEST_DATE){
+            Date date = (Date)data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+            mCrime.setDate(date);
+            updateDate();
+        }
+    }
+
+    private void updateDate() {
+        mDateBtn.setText(mCrime.getDate().toString());
     }
 }
