@@ -38,5 +38,6 @@ captures/
 .idea/libraries
 .idea/vcs.xml
 .idea
+.idea/misc.xml
 # Keystore files
 *.jks
