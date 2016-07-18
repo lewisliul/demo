@@ -51,6 +51,7 @@ public class CrimeFragment extends Fragment {
         mTitleEdit = (EditText)v.findViewById(R.id.id_fragment_crime_edittext_title);
         mDateBtn = (Button)v.findViewById(R.id.id_fragment_crime_date_btn);
         mSolvedCheckBox = (CheckBox)v.findViewById(R.id.id_fragment_crime_solved_cbx);
+
         mTitleEdit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -65,6 +66,7 @@ public class CrimeFragment extends Fragment {
         });
         mTitleEdit.setText(mCrime.getTitle());
         updateDate();
+
         mSolvedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -72,6 +74,7 @@ public class CrimeFragment extends Fragment {
             }
         });
         mSolvedCheckBox.setChecked(mCrime.isSolved());
+
         //时间按钮的点击事件
         mDateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,7 +90,7 @@ public class CrimeFragment extends Fragment {
 
         return v;
     }
-
+    //创建crimeFragment对象
     public static CrimeFragment newInstace(UUID crimeId){
         Bundle args = new Bundle();
         args.putSerializable(ARG_CRIME_ID,crimeId);
