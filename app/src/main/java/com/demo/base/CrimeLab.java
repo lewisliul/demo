@@ -16,12 +16,6 @@ public class CrimeLab {
     private List<Crime> mCrimeList;
     private CrimeLab(Context context){
         mCrimeList = new ArrayList<>();
-        for(int i=0;i<100;i++){
-            Crime crime = new Crime();
-            crime.setTitle("crime #" + i);
-            crime.setSolved(i % 2 == 0);
-            mCrimeList.add(crime);
-        }
     }
 
     public static CrimeLab getInstance(Context context){
@@ -53,5 +47,12 @@ public class CrimeLab {
             }
         }
         return null;
+    }
+
+    /**
+     * 添加crime对象
+     */
+    public void addCrime(Crime c){
+        mCrimeList.add(c);
     }
 }
