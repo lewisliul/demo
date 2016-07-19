@@ -115,4 +115,13 @@ public class CrimeFragment extends Fragment {
     private void updateDate() {
         mDateBtn.setText(mCrime.getDate().toString());
     }
+
+    /**
+     * 刷新lab中的crime数据
+     */
+    @Override
+    public void onPause() {
+        super.onPause();
+        CrimeLab.getInstance(getActivity()).updateCrime(mCrime);
+    }
 }

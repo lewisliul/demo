@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +29,7 @@ import java.util.List;
  * Created by hc on 2016/7/16.
  */
 public class CrimeListFragment extends Fragment {
+    private static final String TAG = "CrimeListFragment";
     private static final String SAVED_SUBTITLE_VISIBLE = "subtitle";
     private RecyclerView mRecyclerView;
     private CrimeAdapter mAdapter;
@@ -60,9 +62,12 @@ public class CrimeListFragment extends Fragment {
             mRecyclerView.setAdapter(mAdapter);
         }
         else{
+            mAdapter.setCrimeList(crimeList);
             mAdapter.notifyDataSetChanged();
         }
         updateSubtitle();
+
+        Log.d(TAG, "updateUi: ----------" + crimeList.size());
     }
 
     /**
@@ -124,6 +129,10 @@ public class CrimeListFragment extends Fragment {
             return crimeList.size();
         }
 
+        public void setCrimeList(List<Crime> crimeLists){
+            crimeList = crimeLists;
+        }
+
     }
 
     @Override
@@ -162,6 +171,10 @@ public class CrimeListFragment extends Fragment {
                 getActivity().invalidateOptionsMenu();
                 updateSubtitle();
                 return true;
+            case R.id.menu_item_delete_crime:
+                CrimeLab.getInstance(getActivity()).deleteCrime();
+                updateUi();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
 
@@ -174,7 +187,7 @@ public class CrimeListFragment extends Fragment {
     private void updateSubtitle(){
         CrimeLab lab = CrimeLab.getInstance(getActivity());
         int count = lab.getCrimeList().size();
-        String s = getActivity().getResources().getQuantityString(R.plurals.subtitle_plural,count,count);
+        String s = getResources().getQuantityString(R.plurals.subtitle_plural,count,count);
         if(!mSubtitleVisible){
             s = null;
         }
