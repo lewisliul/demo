@@ -10,7 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.demo.R;
-import com.demo.base.CrimeLab;
+import com.demo.data.CrimeLab;
 import com.demo.bean.Crime;
 import com.demo.fragment.CrimeFragment;
 

@@ -19,7 +19,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.demo.R;
-import com.demo.base.CrimeLab;
+import com.demo.data.CrimeLab;
 import com.demo.bean.Crime;
 import com.demo.ui.CrimePagerActivity;
 
