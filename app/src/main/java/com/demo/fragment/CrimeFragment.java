@@ -5,9 +5,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,11 +23,15 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.demo.R;
 import com.demo.bean.Crime;
 import com.demo.data.CrimeLab;
+import com.demo.util.PictureUtils;
 
+import java.io.File;
 import java.util.Date;
 import java.util.UUID;
 
@@ -38,10 +44,14 @@ public class CrimeFragment extends Fragment {
     private static final String DIALOG_DATE = "DialogDate";
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_CONTACT = 1;
+    private static final int REQUEST_PHOTO= 2;
     private Crime mCrime;
     private EditText mTitleEdit;
     private Button mDateBtn,mReportBtn,mSuspectBtn;
     private CheckBox mSolvedCheckBox;
+    private ImageButton mPhotoBtn;
+    private ImageView mPhotoView;
+    private File mPhotoFile;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,6 +59,7 @@ public class CrimeFragment extends Fragment {
         mCrime = new Crime();
         UUID id = (UUID)getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = CrimeLab.getInstance(getActivity()).getCrime(id);
+        mPhotoFile = CrimeLab.getInstance(getActivity()).getPhotoFile(mCrime);
     }
 
     @Override
@@ -59,6 +70,8 @@ public class CrimeFragment extends Fragment {
         mSolvedCheckBox = (CheckBox)v.findViewById(R.id.id_fragment_crime_solved_cbx);
         mReportBtn = (Button)v.findViewById(R.id.id_crime_report_btn);
         mSuspectBtn = (Button)v.findViewById(R.id.id_crime_suspect_btn);
+        mPhotoBtn = (ImageButton)v.findViewById(R.id.id_crime_camera_imgbtn);
+        mPhotoView = (ImageView)v.findViewById(R.id.id_crime_camera_imgview);
 
         mTitleEdit.addTextChangedListener(new TextWatcher() {
             @Override
@@ -128,7 +141,23 @@ public class CrimeFragment extends Fragment {
             mSuspectBtn.setEnabled(false);
         }
 
+        //使用相机intent
+        final Intent captureImageIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        boolean canTakePhoto = mPhotoFile != null && captureImageIntent.resolveActivity(packageManager) != null;
+        mPhotoBtn.setEnabled(canTakePhoto);
+        if(canTakePhoto){
+            Uri uri = Uri.fromFile(mPhotoFile);
+            captureImageIntent.putExtra(MediaStore.EXTRA_OUTPUT,uri);
+        }
+        mPhotoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivityForResult(captureImageIntent,REQUEST_PHOTO);
+            }
+        });
 
+        //显示图片
+        updatePhotoView();
 
         return v;
     }
@@ -171,6 +200,9 @@ public class CrimeFragment extends Fragment {
                 c.close();
             }
         }
+        else if(requestCode == REQUEST_PHOTO){
+            updatePhotoView();
+        }
     }
 
     private void updateDate() {
@@ -212,5 +244,16 @@ public class CrimeFragment extends Fragment {
         return report;
     }
 
+    /**
+     * 更新photoview的图片
+     */
+    private void updatePhotoView(){
+        if(mPhotoFile == null || !mPhotoFile.exists()){
+            mPhotoView.setImageDrawable(null);
+        }else{
+            Bitmap bitmap = PictureUtils.getScaleBitmap(mPhotoFile.getPath(),getActivity());
+            mPhotoView.setImageBitmap(bitmap);
+        }
+    }
 
 }

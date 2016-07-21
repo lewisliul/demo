@@ -3,21 +3,47 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/crime_title_label"
-        android:textColor="#000000"
-        android:textStyle="bold"
-        android:textSize="18sp"/>
 
-    <EditText
-        android:id="@+id/id_fragment_crime_edittext_title"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="@string/crime_title_hint"
-        android:layout_margin="10dp"
-        android:textSize="20sp"/>
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp">
+
+        <include layout="@layout/view_camera_and_title"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/crime_title_label"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="18sp"/>
+
+            <EditText
+                android:id="@+id/id_fragment_crime_edittext_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/crime_title_hint"
+                android:layout_margin="10dp"
+                android:textSize="20sp"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#6f8db9"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -25,6 +51,7 @@
         android:text="@string/crime_details_label"
         android:textColor="#000000"
         android:textStyle="bold"
+        android:layout_marginLeft="10dp"
         android:textSize="18sp"/>
 
     <LinearLayout

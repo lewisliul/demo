@@ -4,12 +4,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 
 import com.demo.bean.Crime;
 import com.demo.db.CrimeBaseHelper;
 import com.demo.db.CrimeCursorWrapper;
 import com.demo.db.CrimeDb.CrimeTable;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -122,5 +124,17 @@ public class CrimeLab {
      */
     public void deleteCrime(){
         mDatabase.delete(CrimeTable.NAME,null,null);
+    }
+
+    /**
+     * 定位图片文件的目录
+     */
+    public File getPhotoFile(Crime crime){
+        File fileDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if(fileDir == null){
+            return null;
+        }
+        File path = new File(fileDir,crime.getPhotoFilename());
+        return path;
     }
 }
