@@ -1,4 +1,4 @@
-package com.moretv.typeAdapter;
+package com.typeAdapter;
 
 
 import java.lang.reflect.ParameterizedType;

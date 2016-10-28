@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="6dp"
     android:paddingRight="6dp"
     android:paddingTop="2dp"
-    android:background="#fdf9f9"
-    tools:context=".ui.CrimeActivity">
+    android:background="#fdf9f9">
 
-    <FrameLayout
-        android:id="@+id/id_crime_fragmentcontainer_framelayout"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </FrameLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="LogTest"
+            android:textSize="40sp"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

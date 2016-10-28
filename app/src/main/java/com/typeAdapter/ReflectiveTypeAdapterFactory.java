@@ -1,14 +1,13 @@
-package com.moretv.typeAdapter;
+package com.typeAdapter;
 
 import android.text.TextUtils;
-
-import com.moretv.Mson;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,25 +18,38 @@ import java.util.Map;
 /**
  * Created by hc on 2016/9/26.
  */
-public class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
+public class ReflectiveTypeAdapterFactory implements TypeAdapters.TypeAdapterFactory {
 
-    private final Excluder excluder;
 
-    public ReflectiveTypeAdapterFactory(Excluder excluder){
-        this.excluder = excluder;
+    private int modifiers = Modifier.TRANSIENT | Modifier.STATIC;
 
-    }
-
+    /**
+     * 工厂方法创建适配对象
+     * @param mson
+     * @param type
+     * @param <T>
+     * @return
+     */
     @Override
     public <T> TypeAdapter<T> create(Mson mson, TypeToken<T> type) {
         Class<? super T> raw = type.getRawType();
+        //基本类型返回null
         if (!Object.class.isAssignableFrom(raw)) {
-            return null; // it's a primitive!
+            return null;
         }
 
-        return new Adapter<T>(getBoundFields(mson,type,raw));
+        TypeAdapter<T> adapter = new Adapter<T>(getBoundFields(mson,type,raw));
+
+        return adapter;
     }
 
+    /**
+     * 通过对象类型将所有变量存储起来
+     * @param context
+     * @param type
+     * @param raw
+     * @return
+     */
     private Map<String, BoundField> getBoundFields(final Mson context, TypeToken<?> type, Class<?> raw) {
         Map<String, BoundField> result = new LinkedHashMap<>();
         if (raw.isInterface()) {
@@ -48,8 +60,7 @@ public class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
         while (raw != Object.class) {
             Field[] fields = raw.getDeclaredFields();
             for (Field field : fields) {
-
-                boolean serialize = excludeField(field);
+                boolean serialize = exclude(field);
                 if (!serialize) {
                     continue;
                 }
@@ -82,7 +93,16 @@ public class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
         return  result;
     }
 
-    private ReflectiveTypeAdapterFactory.BoundField createBoundField(final Mson context,
+    /**
+     * 通过成员变量封装成对象
+     * @param context
+     * @param field
+     * @param name
+     * @param fieldType
+     * @param serialize
+     * @return
+     */
+    private BoundField   createBoundField(final Mson context,
                                                                      final Field field, final String name,
                                                                      final TypeToken<?> fieldType, boolean serialize){
         JsonAdapter annotation = field.getAnnotation(JsonAdapter.class);
@@ -93,7 +113,7 @@ public class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
         }
         final TypeAdapter<?> typeAdapter = mapped;
 
-        return new ReflectiveTypeAdapterFactory.BoundField(name,serialize){
+        return new BoundField(name,serialize){
 
             @Override
             boolean putField(Object value) throws IllegalAccessException {
@@ -109,6 +129,7 @@ public class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
                 Object fieldValue =  field.get(value);
                 TypeAdapter t = jsonAdapterPresent ? typeAdapter
                         : new TypeAdapterRuntimeTypeWrapper(context, typeAdapter, fieldType.getType());
+                //运行时获取类型适配的类进行键值的存储
                 t.put(map,name,fieldValue);
             }
         };
@@ -140,6 +161,10 @@ public class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
         return fieldNames;
     }
 
+    /**
+     * 自定义类的适配类
+     * @param <T>
+     */
     public static final class Adapter<T> extends TypeAdapter<T> {
 
         private final Map<String, BoundField> boundFields;
@@ -168,13 +193,14 @@ public class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
             if(TextUtils.isEmpty(key)){
                 map.putAll(subMap);
             }else{
-                map.put(key,subMap);
+                map.put(key,subMap.toString());
             }
-
-
         }
     }
 
+    /**
+     * 对变量进行简单的封装
+     */
     static abstract class BoundField {
         final String name;
         final boolean serialized;
@@ -188,20 +214,38 @@ public class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
     }
 
 
-    public boolean excludeField(Field f) {
-        return excludeField(f,excluder);
+    private boolean exclude(Field f) {
+        return !excludeClass(f.getType()) && !excludeField(f);
     }
 
-    static boolean excludeField(Field f, Excluder excluder) {
-        return !excluder.excludeClass(f.getType()) && !excluder.excludeField(f);
+    private boolean excludeField(Field field) {
+        if ((modifiers & field.getModifiers()) != 0) {
+            return true;
+        }
+        if (isAnonymousOrLocal(field.getType())) {
+            return true;
+        }
+        return false;
     }
+
+    public boolean excludeClass(Class<?> clazz) {
+        if (isAnonymousOrLocal(clazz)) {
+            return true;
+        }
+
+        return false;
+    }
+    private boolean isAnonymousOrLocal(Class<?> clazz) {
+        return !Enum.class.isAssignableFrom(clazz)
+                && (clazz.isAnonymousClass() || clazz.isLocalClass());
+    }
+
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.TYPE, ElementType.FIELD})
     public @interface JsonAdapter {
-
-        /** Either a {@link TypeAdapter} or {@link TypeAdapterFactory}. */
         Class<?> value();
-
     }
+
+
 }

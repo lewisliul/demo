@@ -1,4 +1,4 @@
-package com.moretv;
+package com.typeAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,13 +9,13 @@ import java.util.Map;
  * Created by hc on 2016/9/24.
  */
 public class Bean {
-    private String name = "liuhao";
-    private  int age = 10;
     private List lista ;
+    private String string = "string";
     private subBean subBean;
     private Enum anEnum;
     private Map mapa;
     private subBean subBean2;
+    private Sub subBean3;
 
     public Bean(){
         lista = new ArrayList();
@@ -27,17 +27,24 @@ public class Bean {
         mapa.put("name","feifei");
         mapa.put("name2","feifei2");
         subBean2 = null;
+        subBean3 = new Sub();
     }
 
 
     @Override
     public String toString() {
-        return "name : " + name +
-                ", age : " + age +
+        return
                 ", lista : " + lista +
                 ", subBean : " + subBean +
                 ", subBean2 : " + subBean2 +
                 ", mapa : " + mapa +
-                ", anEnum : " + anEnum;
+                ", anEnum : " + anEnum+
+                 ", subBean3 : " + subBean3 +
+				", string : " + string;
+    }
+
+    static class Sub{
+        private String name = "subBean-sub";
+        private String name2 = "";
     }
 }

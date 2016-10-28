@@ -1,8 +1,6 @@
-package com.moretv.typeAdapter;
+package com.typeAdapter;
 
 import android.text.TextUtils;
-
-import com.moretv.Mson;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -29,56 +27,60 @@ public final class TypeAdapters {
     public static final TypeAdapter<String> STRING = new TypeAdapter<String>(){
         @Override
         public void put(Map map,String key, String value) {
-            map.put(getObjectKey(key,value),value);
+            if("".equals(value)){
+                map.put(getObjectKey(key,value),"\"\"");
+            }else{
+                map.put(getObjectKey(key,value),value);
+            }
         }
     };
 
     public static final TypeAdapter<Number> INTEGER = new TypeAdapter<Number>() {
         @Override
         public void put(Map map,String key, Number value) {
-            map.put(getObjectKey(key,value),value);
+            map.put(getObjectKey(key,value),String.valueOf(value));
         }
     };
 
     public static final TypeAdapter<Boolean> BOOLEAN = new TypeAdapter<Boolean>() {
         @Override
         public void put(Map map,String key, Boolean value) {
-            map.put(getObjectKey(key,value),value);
+            map.put(getObjectKey(key,value),String.valueOf(value));
         }
     };
 
     public static final TypeAdapter<Number> BYTE = new TypeAdapter<Number>() {
         @Override
         public void put(Map map,String key, Number value) {
-            map.put(getObjectKey(key,value),value);
+            map.put(getObjectKey(key,value),String.valueOf(value));
         }
     };
 
     public static final TypeAdapter<Number> SHORT = new TypeAdapter<Number>() {
         @Override
         public void put(Map map,String key, Number value) {
-            map.put(getObjectKey(key,value),value);
+            map.put(getObjectKey(key,value),String.valueOf(value));
         }
     };
 
     public static final TypeAdapter<Character> CHARACTER = new TypeAdapter<Character>() {
         @Override
         public void put(Map map,String key, Character value) {
-            map.put(getObjectKey(key,value),value);
+            map.put(getObjectKey(key,value),String.valueOf(value));
         }
     };
 
     public static final TypeAdapter<Number> LONG = new TypeAdapter<Number>() {
         @Override
         public void put(Map map,String key, Number value) {
-            map.put(getObjectKey(key,value),value);
+            map.put(getObjectKey(key,value),String.valueOf(value));
         }
     };
 
     public static final TypeAdapter<Number> DOUBLE = new TypeAdapter<Number>() {
         @Override
         public void put(Map map,String key, Number value) {
-            map.put(getObjectKey(key,value),value);
+            map.put(getObjectKey(key,value),String.valueOf(value));
         }
     };
 
@@ -86,7 +88,7 @@ public final class TypeAdapters {
         @Override
         public void put(Map map,String key, Number value) {
 
-            map.put(getObjectKey(key,value),value);
+            map.put(getObjectKey(key,value),String.valueOf(value));
         }
     };
 
@@ -164,30 +166,6 @@ public final class TypeAdapters {
 
             typeAdapter.put(map,key,value);
 
-//            Map subMap = new HashMap();
-//            TypeAdapter<Object> typeAdapter = (TypeAdapter<Object>) mson.getAdapter(value.getClass());
-//            if (typeAdapter instanceof ObjectTypeAdapter){
-//                Class<?> cls = value.getClass();
-//                Method[] methods = cls.getDeclaredMethods();
-//                Field[] fields = cls.getDeclaredFields();
-//
-//                for (Field field : fields) {
-//                    try{
-//                        String fieldType = field.getType().getSimpleName();
-//                        String fieldGetName = parGetName(field.getName());
-//                        if (!checkGetMet(methods, fieldGetName)) {
-//                            continue;
-//                        }
-//                        Method fieldMethod = cls.getMethod(fieldGetName, new Class[] {});
-//                        Object fieldVal = fieldMethod.invoke(value, new Object[] {});
-//                        typeAdapter.put(subMap,field.getName(),fieldVal);
-//                    }catch (Exception e){
-//                        e.printStackTrace();
-//                        continue;
-//                    }
-//                }
-//
-//                map.put(getObjectKey(key,value),subMap);
         }
     }
 
@@ -204,7 +182,7 @@ public final class TypeAdapters {
             for(E element : value){
                 list.add(element);
             }
-            map.put(getObjectKey(key,value),list);
+            map.put(getObjectKey(key,value),list.toString());
         }
     }
 
@@ -220,7 +198,7 @@ public final class TypeAdapters {
                 return;
             }
 
-            map.put(key,value);
+            map.put(key, value.toString());
 
         }
     };
@@ -358,5 +336,9 @@ public final class TypeAdapters {
     public @interface SerializedName {
         String value();
         String[] alternate() default {};
+    }
+
+    public interface TypeAdapterFactory {
+        <T> TypeAdapter<T> create(Mson mson, TypeToken<T> typeToken);
     }
 }
