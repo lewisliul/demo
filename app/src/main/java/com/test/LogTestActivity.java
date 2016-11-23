@@ -32,5 +32,11 @@ public class LogTestActivity extends Activity {
 		logger.d("The message with argument: age=%s", 18);
 		logger.json(jsonString);
 		logger.xml(xmlString);
+
+
+	}
+
+	private void zhugeSdk(){
+
 	}
 }
